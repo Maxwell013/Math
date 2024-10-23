@@ -1,16 +1,10 @@
 # Math
 A lightweight math library for C++
 
-## Verison 0.1.0 - Basic vector classes
-- Major: Development
-- Minor: Basic vector classes
-- Patch: Basic vector classes
-
-## Features
-Additional sections will come in following updates!
-
+## Version Alpha 0.1
+This library is under heavy development and is not functional for the time being.
 
 ## Changelog
 
-### Version 0.1.0 - Basic vector classes
-- Added basic implementation for vec2, vec3 and vec4 classes
+### Version Alpha 0.1
+- Added basic float vectors (vec2, vec3, vec4)
