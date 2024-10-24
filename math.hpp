@@ -6,6 +6,9 @@
 #include "math/VectorFloat3.hpp"
 #include "math/VectorFloat2.hpp"
 
+// Matrices
+#include "math/MatrixFloat4x4.hpp"
+
 namespace math {
 
     typedef VectorFloat4 vecf4;
@@ -15,4 +18,8 @@ namespace math {
     typedef vecf4 vec4;
     typedef vecf3 vec3;
     typedef vecf2 vec2;
+
+    typedef MatrixFloat4x4 matf4x4;
+
+    typedef matf4x4 mat4;
 }

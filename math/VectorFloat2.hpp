@@ -13,6 +13,12 @@ namespace math {
 
         float x, y;
 
+        static VectorFloat2 Zero() { return VectorFloat2(); };
+        static VectorFloat2 Up() { return VectorFloat2(0.0f, 1.0f); };
+        static VectorFloat2 Down() { return VectorFloat2(0.0f, -1.0f); };
+        static VectorFloat2 Right() { return VectorFloat2(1.0f, 0.0f); };
+        static VectorFloat2 Left() { return VectorFloat2(-1.0f, 0.0f); };
+
         VectorFloat2(const float p_x = 0, const float p_y = 0) : x(p_x), y(p_y) {}
 
         VectorFloat2(const VectorFloat2& p_vector) : x(p_vector.x), y(p_vector.y) {}
@@ -77,21 +83,21 @@ namespace math {
             return *this;
         }
 
-        float dot(const VectorFloat2& p_vector) const {
+        const float dot(const VectorFloat2& p_vector) const {
             return (
             x * p_vector.x +
             y * p_vector.y
             );
         }
 
-        float magnitude() const {
+        const float magnitude() const {
             return sqrt(
                 x*x +
                 y*y
             );
         }
 
-        VectorFloat2 normalize() const {
+        VectorFloat2 normalized() const {
             float m = magnitude();
             if (m <= FLT_EPSILON) return VectorFloat2(0, 0);
             return VectorFloat2(
@@ -100,7 +106,7 @@ namespace math {
             );
         }
 
-        VectorFloat2& normalized() {
+        VectorFloat2& normalize() {
             float m = magnitude();
             if (m <= FLT_EPSILON) {
                 x = 0; y = 0;

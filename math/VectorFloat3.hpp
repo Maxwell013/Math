@@ -13,6 +13,14 @@ namespace math {
 
         float x, y, z;
 
+        static VectorFloat3 Zero() { return VectorFloat3(); }
+        static VectorFloat3 Up() { return VectorFloat3(0.0f, 1.0f, 0.0f); }
+        static VectorFloat3 Down() { return VectorFloat3(0.0f, -1.0f, 0.0f); }
+        static VectorFloat3 Right() { return VectorFloat3(1.0f, 0.0f, 0.0f); }
+        static VectorFloat3 Left() { return VectorFloat3(-1.0f, 0.0f, 0.0f); }
+        static VectorFloat3 Foward() { return VectorFloat3(0.0f, 0.0f, 1.0f); }
+        static VectorFloat3 Backward() { return VectorFloat3(0.0f, 0.0f, -1.0f); }
+
         VectorFloat3(const float p_x = 0, const float p_y = 0, const float p_z = 0) : x(p_x), y(p_y), z(p_z) {}
 
         VectorFloat3(const VectorFloat3& p_vector) : x(p_vector.x), y(p_vector.y), z(p_vector.z) {}
@@ -86,7 +94,7 @@ namespace math {
             return *this;
         }
 
-        float dot(const VectorFloat3& p_vector) const {
+        const float dot(const VectorFloat3& p_vector) const {
             return (
             x * p_vector.x +
             y * p_vector.y +
@@ -102,7 +110,7 @@ namespace math {
             );
         }
 
-        float magnitude() const {
+        const float magnitude() const {
             return sqrt(
                 x*x +
                 y*y +
@@ -110,7 +118,7 @@ namespace math {
             );
         }
 
-        VectorFloat3 normalize() const {
+        VectorFloat3 normalized() const {
             float m = magnitude();
             if (m <= FLT_EPSILON) return VectorFloat3(0, 0, 0);
             return VectorFloat3(
@@ -120,7 +128,7 @@ namespace math {
             );
         }
 
-        VectorFloat3& normalized() {
+        VectorFloat3& normalize() {
             float m = magnitude();
             if (m <= FLT_EPSILON) {
                 x = 0; y = 0; z = 0;

@@ -13,6 +13,8 @@ namespace math {
 
         float x, y, z, w;
 
+        static VectorFloat4 Zero() { return VectorFloat4(); }
+
         VectorFloat4(const float p_x = 0, const float p_y = 0, const float p_z = 0, const float p_w = 0) : x(p_x), y(p_y), z(p_z), w(p_w) {}
 
         VectorFloat4(const VectorFloat4& p_vector) : x(p_vector.x), y(p_vector.y), z(p_vector.z), w(p_vector.w) {}
@@ -95,7 +97,7 @@ namespace math {
             return *this;
         }
 
-        float dot(const VectorFloat4& p_vector) const {
+        const float dot(const VectorFloat4& p_vector) const {
             return (
             x * p_vector.x +
             y * p_vector.y +
@@ -104,7 +106,7 @@ namespace math {
             );
         }
 
-        float magnitude() const {
+        const float magnitude() const {
             return sqrt(
                 x*x +
                 y*y +
@@ -113,7 +115,7 @@ namespace math {
             );
         }
 
-        VectorFloat4 normalize() const {
+        VectorFloat4 normalized() const {
             float m = magnitude();
             if (m <= FLT_EPSILON) return VectorFloat4(0, 0, 0, 0);
             return VectorFloat4(
@@ -124,7 +126,7 @@ namespace math {
             );
         }
 
-        VectorFloat4& normalized() {
+        VectorFloat4& normalize() {
             float m = magnitude();
             if (m <= FLT_EPSILON) {
                 x = 0; y = 0; z = 0; w = 0;
