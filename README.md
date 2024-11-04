@@ -1,12 +1,13 @@
 # Math
 A lightweight math library for C++
 
-## Version Alpha 0.2
+## Version Alpha 0.3
 This library is under heavy development and is not functional for the time being.
 
 ## Todo
-- mat2, mat3, mat4
-  - projection, camera, rotation, scale, translation, transform
+- mat2, mat3
+
+- mat4 projection, camera, rotation, scale, translation, transform
 - geometry
   - point, line, triangle, sphere, AABB, OBB
   - distance and intersections for all shapes
@@ -16,6 +17,9 @@ This library is under heavy development and is not functional for the time being
 - mati2, mati3, mati4
 
 ## Changelog
+
+### Version Alpha 0.3
+- Added partial SIMD implementation
 
 ### Version Alpha 0.2
 - Added basic float 4x4 matrix (mat4)

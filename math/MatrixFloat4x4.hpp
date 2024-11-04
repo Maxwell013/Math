@@ -1,5 +1,5 @@
-// MatrixFloat4x4.hpp
 #pragma once
+// MatrixFloat4x4.hpp
 
 #include <cfloat>
 #include <cstdlib>
@@ -8,9 +8,11 @@
 #include <cstddef>
 #include <stdexcept>
 
+#include "../simd.hpp"
+
 namespace math {
 
-    class MatrixFloat4x4 {
+    class alignas(16) MatrixFloat4x4 {
 
     private:
 
@@ -78,15 +80,121 @@ namespace math {
         }
 
         MatrixFloat4x4 operator*(const MatrixFloat4x4& p_matrix) const {
-            MatrixFloat4x4 result;
-            for (size_t i_row = 0; i_row < 4; i_row++) {
-                for (size_t i_column = 0; i_column < 4; i_column++) {
-                    result(i_row, i_column) = 0.0f;
-                    for (size_t i_index = 0; i_index < 4; i_index++)
-                        result(i_row, i_column) += m_array[i_row+ i_index * 4] * p_matrix(i_index, i_column);
-                }
-            }
-            return result;
+            float array[16];
+
+            SIMD_F32X4_T A0;
+            SIMD_F32X4_T A1;
+            SIMD_F32X4_T A2;
+            SIMD_F32X4_T A3;
+
+            SIMD_F32X4_T B0;
+            SIMD_F32X4_T B1;
+            SIMD_F32X4_T B2;
+            SIMD_F32X4_T B3;
+
+            SIMD_F32X4_T C0;
+            SIMD_F32X4_T C1;
+            SIMD_F32X4_T C2;
+            SIMD_F32X4_T C3;
+
+            A0 = SIMD_LOAD_F32(m_array);
+            A1 = SIMD_LOAD_F32(m_array + 4);
+            A2 = SIMD_LOAD_F32(m_array + 8);
+            A3 = SIMD_LOAD_F32(m_array + 12);
+
+            C0 = SIMD_MOVE_F32(0);
+            C1 = SIMD_MOVE_F32(0);
+            C2 = SIMD_MOVE_F32(0);
+            C3 = SIMD_MOVE_F32(0);
+
+            B0 = SIMD_LOAD_F32(p_matrix.m_array);
+            C0 = SIMD_FMA_F32(C0, A0, B0, 0);
+            C0 = SIMD_FMA_F32(C0, A1, B0, 1);
+            C0 = SIMD_FMA_F32(C0, A2, B0, 2);
+            C0 = SIMD_FMA_F32(C0, A3, B0, 3);
+            SIMD_STORE_F32(array, C0);
+
+            B1 = SIMD_LOAD_F32(p_matrix.m_array + 4);
+            C0 = SIMD_FMA_F32(C0, A0, B0, 0);
+            C1 = SIMD_FMA_F32(C1, A0, B1, 0);
+            C1 = SIMD_FMA_F32(C1, A1, B1, 1);
+            C1 = SIMD_FMA_F32(C1, A2, B1, 2);
+            C1 = SIMD_FMA_F32(C1, A3, B1, 3);
+            SIMD_STORE_F32(array + 4, C1);
+
+            B2 = SIMD_LOAD_F32(p_matrix.m_array + 8);
+            C2 = SIMD_FMA_F32(C2, A0, B2, 0);
+            C2 = SIMD_FMA_F32(C2, A1, B2, 1);
+            C2 = SIMD_FMA_F32(C2, A2, B2, 2);
+            C2 = SIMD_FMA_F32(C2, A3, B2, 3);
+            SIMD_STORE_F32(array + 8, C2);
+
+            B3 = SIMD_LOAD_F32(p_matrix.m_array + 12);
+            C3 = SIMD_FMA_F32(C3, A0, B3, 0);
+            C3 = SIMD_FMA_F32(C3, A1, B3, 1);
+            C3 = SIMD_FMA_F32(C3, A2, B3, 2);
+            C3 = SIMD_FMA_F32(C3, A3, B3, 3);
+            SIMD_STORE_F32(array + 12, C3);
+
+            return MatrixFloat4x4(array);
+        }
+
+        MatrixFloat4x4& operator*=(const MatrixFloat4x4& p_matrix) {
+            SIMD_F32X4_T A0;
+            SIMD_F32X4_T A1;
+            SIMD_F32X4_T A2;
+            SIMD_F32X4_T A3;
+
+            SIMD_F32X4_T B0;
+            SIMD_F32X4_T B1;
+            SIMD_F32X4_T B2;
+            SIMD_F32X4_T B3;
+
+            SIMD_F32X4_T C0;
+            SIMD_F32X4_T C1;
+            SIMD_F32X4_T C2;
+            SIMD_F32X4_T C3;
+
+            A0 = SIMD_LOAD_F32(m_array);
+            A1 = SIMD_LOAD_F32(m_array + 4);
+            A2 = SIMD_LOAD_F32(m_array + 8);
+            A3 = SIMD_LOAD_F32(m_array + 12);
+
+            C0 = SIMD_MOVE_F32(0);
+            C1 = SIMD_MOVE_F32(0);
+            C2 = SIMD_MOVE_F32(0);
+            C3 = SIMD_MOVE_F32(0);
+
+            B0 = SIMD_LOAD_F32(p_matrix.m_array);
+            C0 = SIMD_FMA_F32(C0, A0, B0, 0);
+            C0 = SIMD_FMA_F32(C0, A1, B0, 1);
+            C0 = SIMD_FMA_F32(C0, A2, B0, 2);
+            C0 = SIMD_FMA_F32(C0, A3, B0, 3);
+            SIMD_STORE_F32(m_array, C0);
+
+            B1 = SIMD_LOAD_F32(p_matrix.m_array + 4);
+            C0 = SIMD_FMA_F32(C0, A0, B0, 0);
+            C1 = SIMD_FMA_F32(C1, A0, B1, 0);
+            C1 = SIMD_FMA_F32(C1, A1, B1, 1);
+            C1 = SIMD_FMA_F32(C1, A2, B1, 2);
+            C1 = SIMD_FMA_F32(C1, A3, B1, 3);
+            SIMD_STORE_F32(m_array + 4, C1);
+
+            B2 = SIMD_LOAD_F32(p_matrix.m_array + 8);
+            C2 = SIMD_FMA_F32(C2, A0, B2, 0);
+            C2 = SIMD_FMA_F32(C2, A1, B2, 1);
+            C2 = SIMD_FMA_F32(C2, A2, B2, 2);
+            C2 = SIMD_FMA_F32(C2, A3, B2, 3);
+            SIMD_STORE_F32(m_array + 8, C2);
+
+            B3 = SIMD_LOAD_F32(p_matrix.m_array + 12);
+            C3 = SIMD_FMA_F32(C3, A0, B3, 0);
+            C3 = SIMD_FMA_F32(C3, A1, B3, 1);
+            C3 = SIMD_FMA_F32(C3, A2, B3, 2);
+            C3 = SIMD_FMA_F32(C3, A3, B3, 3);
+            SIMD_STORE_F32(m_array + 12, C3);
+
+            return *this;
         }
 
         MatrixFloat4x4 operator*(const float p_float) const {

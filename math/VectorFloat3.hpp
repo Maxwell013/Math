@@ -1,5 +1,5 @@
-// VectorFloat3.hpp
 #pragma once
+// VectorFloat3.hpp
 
 #include <cfloat>
 #include <cmath>
@@ -7,11 +7,16 @@
 
 namespace math {
 
-    class VectorFloat3 {
+    class alignas(16) VectorFloat3 {
 
     public:
 
-        float x, y, z;
+        union {
+            struct {
+                float x, y, z;
+            };
+            float components[3];
+        };
 
         static VectorFloat3 Zero() { return VectorFloat3(); }
         static VectorFloat3 Up() { return VectorFloat3(0.0f, 1.0f, 0.0f); }
@@ -94,7 +99,7 @@ namespace math {
             return *this;
         }
 
-        const float dot(const VectorFloat3& p_vector) const {
+        float dot(const VectorFloat3& p_vector) const {
             return (
             x * p_vector.x +
             y * p_vector.y +
@@ -110,7 +115,7 @@ namespace math {
             );
         }
 
-        const float magnitude() const {
+        float magnitude() const {
             return sqrt(
                 x*x +
                 y*y +

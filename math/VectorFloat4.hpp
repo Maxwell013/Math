@@ -1,5 +1,5 @@
-// VectorFloat4.hpp
 #pragma once
+// VectorFloat4.hpp
 
 #include <cfloat>
 #include <cmath>
@@ -7,11 +7,16 @@
 
 namespace math {
 
-    class VectorFloat4 {
+    class alignas(16) VectorFloat4 {
 
     public:
 
-        float x, y, z, w;
+        union {
+            struct {
+                float x, y, z, w;
+            };
+            float components[4];
+        };
 
         static VectorFloat4 Zero() { return VectorFloat4(); }
 
@@ -97,7 +102,7 @@ namespace math {
             return *this;
         }
 
-        const float dot(const VectorFloat4& p_vector) const {
+        float dot(const VectorFloat4& p_vector) const {
             return (
             x * p_vector.x +
             y * p_vector.y +
@@ -106,7 +111,7 @@ namespace math {
             );
         }
 
-        const float magnitude() const {
+        float magnitude() const {
             return sqrt(
                 x*x +
                 y*y +
