@@ -12,21 +12,25 @@ namespace math {
     public:
 
         union {
-            struct {
-                float x, y, z;
-            };
+            struct { float x, y, z; };
+            struct { float r, g, b; };
+            struct { float i, j, k; };
             float components[3];
         };
 
-        static VectorFloat3 Zero() { return VectorFloat3(); }
-        static VectorFloat3 Up() { return VectorFloat3(0.0f, 1.0f, 0.0f); }
-        static VectorFloat3 Down() { return VectorFloat3(0.0f, -1.0f, 0.0f); }
-        static VectorFloat3 Right() { return VectorFloat3(1.0f, 0.0f, 0.0f); }
-        static VectorFloat3 Left() { return VectorFloat3(-1.0f, 0.0f, 0.0f); }
-        static VectorFloat3 Foward() { return VectorFloat3(0.0f, 0.0f, 1.0f); }
-        static VectorFloat3 Backward() { return VectorFloat3(0.0f, 0.0f, -1.0f); }
+        static VectorFloat3 Zero() { return VectorFloat3(0.0f, 0.0f, 0.0f); }
+        static VectorFloat3 X() { return VectorFloat3(1.0f, 0.0f, 0.0f); }
+        static VectorFloat3 Y() { return VectorFloat3(0.0f, 1.0f, 0.0f); }
+        static VectorFloat3 Z() { return VectorFloat3(0.0f, 0.0f, 1.0f); }
 
-        VectorFloat3(const float p_x = 0, const float p_y = 0, const float p_z = 0) : x(p_x), y(p_y), z(p_z) {}
+        static VectorFloat3 Right() { return X(); }
+        static VectorFloat3 Left() { return Zero() - X(); }
+        static VectorFloat3 Up() { return Y(); }
+        static VectorFloat3 Down() { return Zero() - Y(); }
+        static VectorFloat3 Foward() { return Z(); }
+        static VectorFloat3 Backward() { return Zero() - Z(); }
+
+        VectorFloat3(const float p_x = 0.0f, const float p_y = 0.0f, const float p_z = 1.0f) : x(p_x), y(p_y), z(p_z) {}
 
         VectorFloat3(const VectorFloat3& p_vector) : x(p_vector.x), y(p_vector.y), z(p_vector.z) {}
 
@@ -61,6 +65,8 @@ namespace math {
                 z - p_vector.z
             );
         }
+
+        VectorFloat3 operator-() const { return VectorFloat3( -x, -y, -z); }
 
         VectorFloat3& operator-=(const VectorFloat3& p_vector) {
             x -= p_vector.x;

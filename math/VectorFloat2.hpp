@@ -12,17 +12,20 @@ namespace math {
     public:
 
         union {
-            struct {
-                float x, y;
-            };
+            struct { float x, y; };
+            struct { float r, g; };
+            struct { float i, j; };
             float components[2];
         };
 
         static VectorFloat2 Zero() { return VectorFloat2(); };
-        static VectorFloat2 Up() { return VectorFloat2(0.0f, 1.0f); };
-        static VectorFloat2 Down() { return VectorFloat2(0.0f, -1.0f); };
-        static VectorFloat2 Right() { return VectorFloat2(1.0f, 0.0f); };
-        static VectorFloat2 Left() { return VectorFloat2(-1.0f, 0.0f); };
+        static VectorFloat2 X() { return VectorFloat2(1.0f, 0.0f); };
+        static VectorFloat2 Y() { return VectorFloat2(0.0f, 1.0f); };
+
+        static VectorFloat2 Right() { return X(); }
+        static VectorFloat2 Left() { return Zero() - X(); }
+        static VectorFloat2 Up() { return Y(); }
+        static VectorFloat2 Down() { return Zero() - Y(); }
 
         VectorFloat2(const float p_x = 0, const float p_y = 0) : x(p_x), y(p_y) {}
 
@@ -55,6 +58,8 @@ namespace math {
                 y - p_vector.y
             );
         }
+
+        VectorFloat2 operator-() const { return VectorFloat2( -x, -y); }
 
         VectorFloat2& operator-=(const VectorFloat2& p_vector) {
             x -= p_vector.x;

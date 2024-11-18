@@ -1,14 +1,11 @@
 #pragma once
 // MatrixFloat4x4.hpp
 
-#include <cfloat>
-#include <cstdlib>
 #include <iomanip>
-#include <iostream>
-#include <cstddef>
-#include <stdexcept>
 
-#include "../simd.hpp"
+#include "VectorFloat3.hpp"
+
+#include "../../Logger/logger.hpp"
 
 namespace math {
 
@@ -21,12 +18,138 @@ namespace math {
     public:
 
         static MatrixFloat4x4 Indentity() { return MatrixFloat4x4(); }
-        static MatrixFloat4x4 Zero() { return MatrixFloat4x4((float[16]) {
-            0.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 0.0f
-        }); }
+        static MatrixFloat4x4 Zero() {
+            return MatrixFloat4x4((float[16]) {
+                0.0f, 0.0f, 0.0f, 0.0f,
+                0.0f, 0.0f, 0.0f, 0.0f,
+                0.0f, 0.0f, 0.0f, 0.0f,
+                0.0f, 0.0f, 0.0f, 0.0f
+            });
+        }
+
+        static MatrixFloat4x4 Scale(const float p_float) {
+            return MatrixFloat4x4((float[16]) {
+                p_float, 0.0f, 0.0f, 0.0f,
+                0.0f, p_float, 0.0f, 0.0f,
+                0.0f, 0.0f, p_float, 0.0f,
+                0.0f, 0.0f, 0.0f, 1.0f
+            });
+        }
+
+        static MatrixFloat4x4 Scale(const float p_x, const float p_y, const float p_z) {
+            return MatrixFloat4x4((float[16]) {
+                p_x, 0.0f, 0.0f, 0.0f,
+                0.0f, p_y, 0.0f, 0.0f,
+                0.0f, 0.0f, p_z, 0.0f,
+                0.0f, 0.0f, 0.0f, 1.0f
+            });
+        }
+
+        static MatrixFloat4x4 Scale(const VectorFloat3& p_vector) {
+            return MatrixFloat4x4((float[16]) {
+                p_vector.x, 0.0f, 0.0f, 0.0f,
+                0.0f, p_vector.y, 0.0f, 0.0f,
+                0.0f, 0.0f, p_vector.z, 0.0f,
+                0.0f, 0.0f, 0.0f, 1.0f
+            });
+        }
+
+        static MatrixFloat4x4 Translation(const float p_x, const float p_y, const float p_z) {
+            return MatrixFloat4x4((float[16]) {
+                1.0f, 0.0f, 0.0f, 0.0f,
+                0.0f, 1.0f, 0.0f, 0.0f,
+                0.0f, 0.0f, 1.0f, 0.0f,
+                p_x, p_y, p_z, 1.0f
+            });
+        }
+
+        static MatrixFloat4x4 Translation(const VectorFloat3& p_vector) {
+            return MatrixFloat4x4((float[16]) {
+                1.0f, 0.0f, 0.0f, 0.0f,
+                0.0f, 1.0f, 0.0f, 0.0f,
+                0.0f, 0.0f, 1.0f, 0.0f,
+                p_vector.x, p_vector.y, p_vector.z, 1.0f
+            });
+        }
+
+        static MatrixFloat4x4 RotationX(const float p_r) {
+            return MatrixFloat4x4((float[16]) {
+                1.0f, 0.0f     , 0.0f     , 0.0f,
+                0.0f, cosf(p_r),-sinf(p_r), 0.0f,
+                0.0f, sinf(p_r), cosf(p_r), 0.0f,
+                0.0f, 0.0f     , 0.0f     , 1.0f
+            });
+        }
+
+        static MatrixFloat4x4 RotationY(const float p_r) {
+            return MatrixFloat4x4((float[16]) {
+                cosf(p_r), 0.0f, sinf(p_r), 0.0f,
+                0.0f     , 1.0f, 0.0f     , 0.0f,
+                sinf(p_r), 0.0f, cosf(p_r), 0.0f,
+                0.0f     , 0.0f, 0.0f     , 1.0f
+            });
+        }
+
+        static MatrixFloat4x4 RotationZ(const float p_r) {
+            return MatrixFloat4x4((float[16]) {
+                cosf(p_r),-sinf(p_r), 0.0f, 0.0f,
+                sinf(p_r), cosf(p_r), 0.0f, 0.0f,
+                0.0f     , 0.0f     , 1.0f, 0.0f,
+                0.0f     , 0.0f     , 0.0f, 1.0f
+            });
+        }
+
+        static MatrixFloat4x4 Rotation(const float p_r, const VectorFloat3& p_axis) {
+            VectorFloat3 unit = p_axis.normalized();
+            float x = unit.x;
+            float y = unit.y;
+            float z = unit.z;
+            float s = sinf(p_r);
+            float c = cosf(p_r);
+            return MatrixFloat4x4((float[16]) {
+                (c+x*x*(1-c))  , (x*y*(1-c)-z*s), (x*z*(1-c)-y*s), 0.0f,
+                (y*x*(1-c)+z*s), (c+y*y*(1-c))  , (y*z*(1-c)-x*s), 0.0f,
+                (z*x*(1-c)-y*s), (z*y*(1-c)+x*s), (c+z*z*(1-c))  , 0.0f,
+                0.0f           , 0.0f           , 0.0f           , 1.0f
+            });
+        }
+
+        static MatrixFloat4x4 Ortho(const float p_left, const float p_right, const float p_bottom, const float p_top, const float p_near, const float p_far) {
+            float rl = p_right-p_left;
+            float tb = p_top-p_bottom;
+            float fn = p_far-p_near;
+            return MatrixFloat4x4((float[16]) {
+                (2/rl), 0.0f  , 0.0f  , 0.0f,
+                0.0f  , (2/tb), 0.0f  , 0.0f,
+                0.0f  , 0.0f  ,-(2/fn), 0.0f,
+               -(p_right+p_left)/rl, -(p_top+p_bottom)/tb, -(p_far+p_near)/fn, 1.0f
+            });
+        }
+
+        static MatrixFloat4x4 Perspective(const float p_fov, const float p_aspectRatio, const float p_near, const float p_far) {
+            float t = tanf(p_fov/2.0f);
+            float fn = p_far-p_near;
+            MatrixFloat4x4 result = MatrixFloat4x4((float[16]) {
+                (1/p_aspectRatio*t), 0.0f ,  0.0f               ,  0.0f,
+                0.0f               , (1/t),  0.0f               ,  0.0f,
+                0.0f               , 0.0f , -(p_far+p_near)/fn  , -1.0f,
+                0.0f               , 0.0f , -(2*p_far*p_near)/fn,  1.0f
+            });
+            LOGGER_DEBUG(result);
+            return result;
+        }
+
+        static MatrixFloat4x4 LookAt(const VectorFloat3& p_position, const VectorFloat3& p_target, const VectorFloat3& p_up) {
+            VectorFloat3 direction = (p_position - p_target).normalized();
+            VectorFloat3 right = direction.cross(p_up).normalized();
+            VectorFloat3 up = right.cross(direction);
+            return MatrixFloat4x4((float[16]) {
+                right.x    , right.y    , right.z    , 0.0f,
+                up.x       , up.y       , up.z       , 0.0f,
+                direction.x, direction.y, direction.z, 0.0f,
+                0.0f       , 0.0f       , 0.0f       , 1.0f
+            }) * Translation(-p_position);
+        }
 
         MatrixFloat4x4() : m_array(
             1.0f, 0.0f, 0.0f, 0.0f,
@@ -40,7 +163,7 @@ namespace math {
                 m_array[i_index] = p_array[i_index];
         }
 
-        MatrixFloat4x4(const MatrixFloat4x4 &p_matrix) {
+        MatrixFloat4x4(const MatrixFloat4x4& p_matrix) {
             for (size_t i_index = 0; i_index < 16; i_index++)
                 m_array[i_index] = p_matrix[i_index];
         }
@@ -81,120 +204,15 @@ namespace math {
 
         MatrixFloat4x4 operator*(const MatrixFloat4x4& p_matrix) const {
             float array[16];
-
-            SIMD_F32X4_T A0;
-            SIMD_F32X4_T A1;
-            SIMD_F32X4_T A2;
-            SIMD_F32X4_T A3;
-
-            SIMD_F32X4_T B0;
-            SIMD_F32X4_T B1;
-            SIMD_F32X4_T B2;
-            SIMD_F32X4_T B3;
-
-            SIMD_F32X4_T C0;
-            SIMD_F32X4_T C1;
-            SIMD_F32X4_T C2;
-            SIMD_F32X4_T C3;
-
-            A0 = SIMD_LOAD_F32(m_array);
-            A1 = SIMD_LOAD_F32(m_array + 4);
-            A2 = SIMD_LOAD_F32(m_array + 8);
-            A3 = SIMD_LOAD_F32(m_array + 12);
-
-            C0 = SIMD_MOVE_F32(0);
-            C1 = SIMD_MOVE_F32(0);
-            C2 = SIMD_MOVE_F32(0);
-            C3 = SIMD_MOVE_F32(0);
-
-            B0 = SIMD_LOAD_F32(p_matrix.m_array);
-            C0 = SIMD_FMA_F32(C0, A0, B0, 0);
-            C0 = SIMD_FMA_F32(C0, A1, B0, 1);
-            C0 = SIMD_FMA_F32(C0, A2, B0, 2);
-            C0 = SIMD_FMA_F32(C0, A3, B0, 3);
-            SIMD_STORE_F32(array, C0);
-
-            B1 = SIMD_LOAD_F32(p_matrix.m_array + 4);
-            C0 = SIMD_FMA_F32(C0, A0, B0, 0);
-            C1 = SIMD_FMA_F32(C1, A0, B1, 0);
-            C1 = SIMD_FMA_F32(C1, A1, B1, 1);
-            C1 = SIMD_FMA_F32(C1, A2, B1, 2);
-            C1 = SIMD_FMA_F32(C1, A3, B1, 3);
-            SIMD_STORE_F32(array + 4, C1);
-
-            B2 = SIMD_LOAD_F32(p_matrix.m_array + 8);
-            C2 = SIMD_FMA_F32(C2, A0, B2, 0);
-            C2 = SIMD_FMA_F32(C2, A1, B2, 1);
-            C2 = SIMD_FMA_F32(C2, A2, B2, 2);
-            C2 = SIMD_FMA_F32(C2, A3, B2, 3);
-            SIMD_STORE_F32(array + 8, C2);
-
-            B3 = SIMD_LOAD_F32(p_matrix.m_array + 12);
-            C3 = SIMD_FMA_F32(C3, A0, B3, 0);
-            C3 = SIMD_FMA_F32(C3, A1, B3, 1);
-            C3 = SIMD_FMA_F32(C3, A2, B3, 2);
-            C3 = SIMD_FMA_F32(C3, A3, B3, 3);
-            SIMD_STORE_F32(array + 12, C3);
-
+            for (size_t i_row = 0; i_row < 4; i_row++)
+                for (size_t i_column = 0; i_column < 4; i_column++) {
+                    array[i_row * 4 + i_column] =
+                        m_array[i_column] * p_matrix(i_row, 0) +
+                        m_array[4 + i_column] * p_matrix(i_row, 1) +
+                        m_array[8 + i_column] * p_matrix(i_row, 2) +
+                        m_array[12 + i_column] * p_matrix(i_row, 3);
+                }
             return MatrixFloat4x4(array);
-        }
-
-        MatrixFloat4x4& operator*=(const MatrixFloat4x4& p_matrix) {
-            SIMD_F32X4_T A0;
-            SIMD_F32X4_T A1;
-            SIMD_F32X4_T A2;
-            SIMD_F32X4_T A3;
-
-            SIMD_F32X4_T B0;
-            SIMD_F32X4_T B1;
-            SIMD_F32X4_T B2;
-            SIMD_F32X4_T B3;
-
-            SIMD_F32X4_T C0;
-            SIMD_F32X4_T C1;
-            SIMD_F32X4_T C2;
-            SIMD_F32X4_T C3;
-
-            A0 = SIMD_LOAD_F32(m_array);
-            A1 = SIMD_LOAD_F32(m_array + 4);
-            A2 = SIMD_LOAD_F32(m_array + 8);
-            A3 = SIMD_LOAD_F32(m_array + 12);
-
-            C0 = SIMD_MOVE_F32(0);
-            C1 = SIMD_MOVE_F32(0);
-            C2 = SIMD_MOVE_F32(0);
-            C3 = SIMD_MOVE_F32(0);
-
-            B0 = SIMD_LOAD_F32(p_matrix.m_array);
-            C0 = SIMD_FMA_F32(C0, A0, B0, 0);
-            C0 = SIMD_FMA_F32(C0, A1, B0, 1);
-            C0 = SIMD_FMA_F32(C0, A2, B0, 2);
-            C0 = SIMD_FMA_F32(C0, A3, B0, 3);
-            SIMD_STORE_F32(m_array, C0);
-
-            B1 = SIMD_LOAD_F32(p_matrix.m_array + 4);
-            C0 = SIMD_FMA_F32(C0, A0, B0, 0);
-            C1 = SIMD_FMA_F32(C1, A0, B1, 0);
-            C1 = SIMD_FMA_F32(C1, A1, B1, 1);
-            C1 = SIMD_FMA_F32(C1, A2, B1, 2);
-            C1 = SIMD_FMA_F32(C1, A3, B1, 3);
-            SIMD_STORE_F32(m_array + 4, C1);
-
-            B2 = SIMD_LOAD_F32(p_matrix.m_array + 8);
-            C2 = SIMD_FMA_F32(C2, A0, B2, 0);
-            C2 = SIMD_FMA_F32(C2, A1, B2, 1);
-            C2 = SIMD_FMA_F32(C2, A2, B2, 2);
-            C2 = SIMD_FMA_F32(C2, A3, B2, 3);
-            SIMD_STORE_F32(m_array + 8, C2);
-
-            B3 = SIMD_LOAD_F32(p_matrix.m_array + 12);
-            C3 = SIMD_FMA_F32(C3, A0, B3, 0);
-            C3 = SIMD_FMA_F32(C3, A1, B3, 1);
-            C3 = SIMD_FMA_F32(C3, A2, B3, 2);
-            C3 = SIMD_FMA_F32(C3, A3, B3, 3);
-            SIMD_STORE_F32(m_array + 12, C3);
-
-            return *this;
         }
 
         MatrixFloat4x4 operator*(const float p_float) const {
@@ -328,13 +346,13 @@ namespace math {
         float operator()(const size_t p_row, const size_t p_column) const {
             if (p_row >= 4 || p_column >= 4)
                 throw std::out_of_range("Matrix index out of range!");
-            return m_array[p_row + p_column * 4];
+            return m_array[p_row * 4 + p_column];
         }
 
         float& operator()(const size_t p_row, const size_t p_column) {
             if (p_row >= 4 || p_column >= 4)
                 throw std::out_of_range("Matrix index out of range!");
-            return m_array[p_row + p_column * 4];
+            return m_array[p_row * 4 + p_column];
         }
 
         float operator[](const size_t p_index) const {
@@ -349,6 +367,9 @@ namespace math {
             return m_array[p_index];
         }
 
+        float *ptr() {
+            return &m_array[0];
+        }
     };
 
     inline bool operator==(const MatrixFloat4x4& p_matrixA, const MatrixFloat4x4& p_matrixB) {

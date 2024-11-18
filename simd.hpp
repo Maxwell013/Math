@@ -28,4 +28,6 @@
 
     #define SIMD_FMA_F32(register1, register2, register3, lane) vfmaq_laneq_f32(register1, register2, register3, lane)
     #define SIMD_MLA_S_F32(register1, register2, register3, lane) vmlaq_laneq_f32(register1, register2, register3)
+#else
+    throw std::system_error("This library does not currently support this system!");
 #endif

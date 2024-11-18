@@ -12,15 +12,26 @@ namespace math {
     public:
 
         union {
-            struct {
-                float x, y, z, w;
-            };
+            struct { float x, y, z, w; };
+            struct { float r, g, b, a; };
+            struct { float i, j, k, l; };
             float components[4];
         };
 
-        static VectorFloat4 Zero() { return VectorFloat4(); }
+        static VectorFloat4 Zero() { return VectorFloat4(0.0f, 0.0f, 0.0f, 0.0f); }
+        static VectorFloat4 X() { return VectorFloat4(1.0f, 0.0f, 0.0f, 0.0f); }
+        static VectorFloat4 Y() { return VectorFloat4(0.0f, 1.0f, 0.0f, 0.0f); }
+        static VectorFloat4 Z() { return VectorFloat4(0.0f, 0.0f, 1.0f, 0.0f); }
+        static VectorFloat4 W() { return VectorFloat4(0.0f, 0.0f, 0.0f, 1.0f); }
 
-        VectorFloat4(const float p_x = 0, const float p_y = 0, const float p_z = 0, const float p_w = 0) : x(p_x), y(p_y), z(p_z), w(p_w) {}
+        static VectorFloat4 Right() { return X(); }
+        static VectorFloat4 Left() { return Zero() - X(); }
+        static VectorFloat4 Up() { return Y(); }
+        static VectorFloat4 Down() { return Zero() - Y(); }
+        static VectorFloat4 Foward() { return Z(); }
+        static VectorFloat4 Backward() { return Zero() - Z(); }
+
+        VectorFloat4(const float p_x = 0.0f, const float p_y = 0.0f, const float p_z = 0.0f, const float p_w = 1.0f) : x(p_x), y(p_y), z(p_z), w(p_w) {}
 
         VectorFloat4(const VectorFloat4& p_vector) : x(p_vector.x), y(p_vector.y), z(p_vector.z), w(p_vector.w) {}
 
@@ -59,6 +70,8 @@ namespace math {
                 w + p_vector.w
             );
         }
+
+        VectorFloat4 operator-() const { return VectorFloat4( -x, -y, -z, -w); }
 
         VectorFloat4& operator-=(const VectorFloat4& p_vector) {
             x -= p_vector.x;
@@ -108,6 +121,15 @@ namespace math {
             y * p_vector.y +
             z * p_vector.z +
             w * p_vector.w
+            );
+        }
+
+        VectorFloat4 cross(const VectorFloat4& p_vector) const {
+            return VectorFloat4(
+                y * p_vector.z - z * p_vector.y,
+                z * p_vector.x - x * p_vector.z,
+                x * p_vector.y - y * p_vector.x,
+                1.0f
             );
         }
 
