@@ -1,9 +1,9 @@
 #pragma once
 // VectorFloat2.hpp
 
-#include <cfloat>
-#include <cmath>
 #include <iostream>
+
+#include "scalarFloat.hpp"
 
 namespace math {
 
@@ -64,6 +64,19 @@ namespace math {
         VectorFloat2& operator-=(const VectorFloat2& p_vector) {
             x -= p_vector.x;
             y -= p_vector.y;
+            return *this;
+        }
+
+        VectorFloat2 operator*(const VectorFloat2 p_vector) const {
+            return VectorFloat2(
+                x * p_vector.x,
+                y * p_vector.y
+            );
+        }
+
+        VectorFloat2& operator*=(const VectorFloat2 p_vector) {
+            x *= p_vector.x;
+            y *= p_vector.y;
             return *this;
         }
 

@@ -1,9 +1,9 @@
 #pragma once
 // VectorFloat4.hpp
 
-#include <cfloat>
-#include <cmath>
 #include <iostream>
+
+#include "scalarFloat.hpp"
 
 namespace math {
 
@@ -78,6 +78,23 @@ namespace math {
             y -= p_vector.y;
             z -= p_vector.z;
             w -= p_vector.w;
+            return *this;
+        }
+
+        VectorFloat4 operator*(const VectorFloat4 p_vector) const {
+            return VectorFloat4(
+                x * p_vector.x,
+                y * p_vector.y,
+                z * p_vector.z,
+                w * p_vector.w
+            );
+        }
+
+        VectorFloat4& operator*=(const VectorFloat4 p_vector) {
+            x *= p_vector.x;
+            y *= p_vector.y;
+            z *= p_vector.z;
+            w *= p_vector.w;
             return *this;
         }
 

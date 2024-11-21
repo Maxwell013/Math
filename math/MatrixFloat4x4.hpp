@@ -4,8 +4,7 @@
 #include <iomanip>
 
 #include "VectorFloat3.hpp"
-
-#include "../../Logger/logger.hpp"
+#include "trigonometryFloat.hpp"
 
 namespace math {
 
@@ -74,28 +73,28 @@ namespace math {
 
         static MatrixFloat4x4 RotationX(const float p_r) {
             return MatrixFloat4x4((float[16]) {
-                1.0f, 0.0f     , 0.0f     , 0.0f,
-                0.0f, cosf(p_r),-sinf(p_r), 0.0f,
-                0.0f, sinf(p_r), cosf(p_r), 0.0f,
-                0.0f, 0.0f     , 0.0f     , 1.0f
+                1.0f, 0.0f    , 0.0f    , 0.0f,
+                0.0f, cos(p_r), sin(p_r), 0.0f,
+                0.0f,-sin(p_r), cos(p_r), 0.0f,
+                0.0f, 0.0f    , 0.0f    , 1.0f
             });
         }
 
         static MatrixFloat4x4 RotationY(const float p_r) {
             return MatrixFloat4x4((float[16]) {
-                cosf(p_r), 0.0f, sinf(p_r), 0.0f,
-                0.0f     , 1.0f, 0.0f     , 0.0f,
-                sinf(p_r), 0.0f, cosf(p_r), 0.0f,
-                0.0f     , 0.0f, 0.0f     , 1.0f
+                cos(p_r), 0.0f, sin(p_r), 0.0f,
+                0.0f    , 1.0f, 0.0f    , 0.0f,
+               -sin(p_r), 0.0f, cos(p_r), 0.0f,
+                0.0f    , 0.0f, 0.0f    , 1.0f
             });
         }
 
         static MatrixFloat4x4 RotationZ(const float p_r) {
             return MatrixFloat4x4((float[16]) {
-                cosf(p_r),-sinf(p_r), 0.0f, 0.0f,
-                sinf(p_r), cosf(p_r), 0.0f, 0.0f,
-                0.0f     , 0.0f     , 1.0f, 0.0f,
-                0.0f     , 0.0f     , 0.0f, 1.0f
+                cos(p_r), sin(p_r), 0.0f, 0.0f,
+               -sin(p_r), cos(p_r), 0.0f, 0.0f,
+                0.0f    , 0.0f    , 1.0f, 0.0f,
+                0.0f    , 0.0f    , 0.0f, 1.0f
             });
         }
 
@@ -104,8 +103,8 @@ namespace math {
             float x = unit.x;
             float y = unit.y;
             float z = unit.z;
-            float s = sinf(p_r);
-            float c = cosf(p_r);
+            float s = sin(p_r);
+            float c = cos(p_r);
             return MatrixFloat4x4((float[16]) {
                 (c+x*x*(1-c))  , (x*y*(1-c)-z*s), (x*z*(1-c)-y*s), 0.0f,
                 (y*x*(1-c)+z*s), (c+y*y*(1-c))  , (y*z*(1-c)-x*s), 0.0f,
@@ -127,16 +126,14 @@ namespace math {
         }
 
         static MatrixFloat4x4 Perspective(const float p_fov, const float p_aspectRatio, const float p_near, const float p_far) {
-            float t = tanf(p_fov/2.0f);
+            float t = tan(p_fov/2.0f);
             float fn = p_far-p_near;
-            MatrixFloat4x4 result = MatrixFloat4x4((float[16]) {
+            return MatrixFloat4x4((float[16]) {
                 (1/p_aspectRatio*t), 0.0f ,  0.0f               ,  0.0f,
                 0.0f               , (1/t),  0.0f               ,  0.0f,
                 0.0f               , 0.0f , -(p_far+p_near)/fn  , -1.0f,
                 0.0f               , 0.0f , -(2*p_far*p_near)/fn,  1.0f
             });
-            LOGGER_DEBUG(result);
-            return result;
         }
 
         static MatrixFloat4x4 LookAt(const VectorFloat3& p_position, const VectorFloat3& p_target, const VectorFloat3& p_up) {
@@ -144,10 +141,10 @@ namespace math {
             VectorFloat3 right = direction.cross(p_up).normalized();
             VectorFloat3 up = right.cross(direction);
             return MatrixFloat4x4((float[16]) {
-                right.x    , right.y    , right.z    , 0.0f,
-                up.x       , up.y       , up.z       , 0.0f,
-                direction.x, direction.y, direction.z, 0.0f,
-                0.0f       , 0.0f       , 0.0f       , 1.0f
+                right.x, up.x, direction.x, 0.0f,
+                right.y, up.y, direction.y, 0.0f,
+                right.z, up.z, direction.z, 0.0f,
+                0.0f   , 0.0f, 0.0f       , 1.0f
             }) * Translation(-p_position);
         }
 

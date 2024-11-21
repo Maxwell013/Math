@@ -9,6 +9,10 @@
 // Matrices
 #include "math/MatrixFloat4x4.hpp"
 
+// Utils
+#include "math/scalarFloat.hpp"
+#include "math/trigonometryFloat.hpp"
+
 namespace math {
 
     typedef VectorFloat4 vecf4;

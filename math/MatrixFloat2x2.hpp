@@ -1,8 +1,9 @@
 #pragma once
 // MatrixFloat2x2.hpp
 
-#include <cfloat>
 #include <iomanip>
+
+#include "scalarFloat.hpp"
 
 namespace math {
 

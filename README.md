@@ -1,7 +1,7 @@
 # Math
 A lightweight math library for C++
 
-## Version Alpha 0.4
+## Version Alpha 0.5
 This library is under heavy development and is not functional for the time being.
 
 ## Todo
@@ -15,6 +15,12 @@ This library is under heavy development and is not functional for the time being
 - mati2, mati3, mati4
 
 ## Changelog
+
+### Version Alpha 0.5
+- Added basic scalar utility functions
+- Added basic trig functions
+- Added component wise multiplication for vectors
+- Changed all cmath dependencies
 
 ### Version Aplpha 0.4
 - Added basic float 3x3 and 2x2 matrices

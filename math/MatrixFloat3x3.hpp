@@ -4,6 +4,7 @@
 #include <iomanip>
 
 #include "VectorFloat2.hpp"
+#include "trigonometryFloat.hpp"
 
 namespace math {
 
@@ -64,9 +65,9 @@ namespace math {
 
         static MatrixFloat3x3 Rotation(const float p_r) {
                 return MatrixFloat3x3((float[9]) {
-                cosf(p_r),-sinf(p_r), 0.0f,
-                sinf(p_r), cosf(p_r), 0.0f,
-                0.0f     , 0.0f     , 1.0f
+                cos(p_r),-sin(p_r), 0.0f,
+                sin(p_r), cos(p_r), 0.0f,
+                0.0f    , 0.0f    , 1.0f
             });
         }
 
